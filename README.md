@@ -1,4 +1,4 @@
-# DivinoSys 1.0
+# DivinoSys 2.0
 
 A comprehensive management system for Divino Lanches restaurant.
 
@@ -21,8 +21,8 @@ A comprehensive management system for Divino Lanches restaurant.
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/Moafsa/divinosys1.0.git
-cd divinosys1.0
+git clone https://github.com/Moafsa/divinosys2025.git
+cd divinosys2025
 ```
 
 2. Copy the environment file:
@@ -39,7 +39,7 @@ docker-compose up -d
 
 5. Without Docker:
 - Configure your web server (Apache/Nginx)
-- Import the database schema from `divinosys1.0.sql`
+- Import the database schema from `pdv_db.sql`
 - Configure your PHP environment
 
 ## Deployment
