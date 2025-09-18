@@ -1,0 +1,48 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Build files
+/dist/
+/build/
+
+# Cache
+*.cache
+
+# Uploads directory
+/uploads/*
+!/uploads/.gitkeep
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+php_errors.log
+error.log
+cadastro_admin.log 

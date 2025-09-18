@@ -1,0 +1,5 @@
+[33m39aeb95[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m feat: Sistema completo funcionando com correções de case sensitivity e banco de dados
+[33mfecf5f2[m chore: re-push all local changes
+[33mccfbd2f[m fix: handle null values in number_format and general improvements
+[33m091ac17[m feat: exibe prefixo 'Mini' em todos os fluxos de pedido e impressão; suporte ao preço mini no cadastro/edição de produtos
+[33mcae7002[m Atualização: melhorias em relatórios, modal, botões e agrupamento por mesa
