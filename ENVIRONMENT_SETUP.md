@@ -19,6 +19,7 @@ DB_COLLATION=utf8mb4_unicode_ci
 ### Application Configuration
 ```env
 APP_URL=https://your-domain.com
+APP_PORT=80
 APP_ENV=production
 APP_DEBUG=false
 APP_NAME=DivinoSys
@@ -58,6 +59,7 @@ TZ=America/Sao_Paulo
 ### Local Development
 ```env
 APP_URL=http://localhost:8081
+APP_PORT=8081
 APP_ENV=development
 APP_PROTOCOL=http
 FORCE_HTTPS=false
@@ -68,6 +70,7 @@ SESSION_SECURE=false
 ### Production (Coolify)
 ```env
 APP_URL=https://divinosys.conext.click
+APP_PORT=80
 APP_ENV=production
 APP_PROTOCOL=https
 FORCE_HTTPS=true
@@ -78,6 +81,7 @@ SESSION_SECURE=true
 ### Custom Domain
 ```env
 APP_URL=https://meusite.com
+APP_PORT=80
 APP_ENV=production
 APP_PROTOCOL=https
 FORCE_HTTPS=true

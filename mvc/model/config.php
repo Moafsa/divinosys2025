@@ -53,22 +53,18 @@ class Config {
         // Host (domain) with port
         $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost:8081';
         
-        // Default to HTTP
-        $protocol = 'http';
+        // Get protocol from environment variables
+        $protocol = getenv('APP_PROTOCOL') ?: 'http';
         
-        // Check if this is a production domain that should use HTTPS
-        $production_domains = ['conext.click', 'coolify', 'app', 'divinosys'];
-        $is_production_domain = false;
+        // Check if we should force HTTPS
+        $force_https = getenv('FORCE_HTTPS') === 'true';
+        $is_production = getenv('IS_PRODUCTION') === 'true';
         
-        foreach ($production_domains as $domain) {
-            if (strpos($host, $domain) !== false) {
-                $is_production_domain = true;
-                break;
-            }
-        }
-        
-        // Force HTTPS for production domains
-        if ($is_production_domain) {
+        // If force HTTPS is enabled, use HTTPS
+        if ($force_https) {
+            $protocol = 'https';
+        } elseif ($is_production) {
+            // If it's production, use HTTPS
             $protocol = 'https';
         } else {
             // Check standard HTTPS indicators for other environments

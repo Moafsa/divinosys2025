@@ -31,7 +31,7 @@ echo "REQUEST_SCHEME: " . ($_SERVER['REQUEST_SCHEME'] ?? 'not set') . "\n";
 echo "</pre>";
 
 echo "<h2>Protocol Detection Logic:</h2>";
-$host = $_SERVER['HTTP_HOST'] ?? 'localhost:8081';
+$host = $_SERVER['HTTP_HOST'] ?? (getenv('APP_URL') ? parse_url(getenv('APP_URL'), PHP_URL_HOST) . (parse_url(getenv('APP_URL'), PHP_URL_PORT) ? ':' . parse_url(getenv('APP_URL'), PHP_URL_PORT) : '') : 'localhost');
 
 echo "<p>Host: <strong>{$host}</strong></p>";
 

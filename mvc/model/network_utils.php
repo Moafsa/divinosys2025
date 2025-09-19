@@ -40,23 +40,19 @@ class NetworkUtils {
         $ip = self::getLocalIP();
         $port = $_SERVER['SERVER_PORT'] ?? '8080';
         
-        // Detect protocol based on environment
-        $protocol = 'http';
+        // Detect protocol based on environment variables
+        $protocol = getenv('APP_PROTOCOL') ?: 'http';
         $host = $_SERVER['HTTP_HOST'] ?? "{$ip}:{$port}";
         
-        // Check if this is a production domain that should use HTTPS
-        $production_domains = ['conext.click', 'coolify', 'app', 'divinosys'];
-        $is_production_domain = false;
+        // Check if we should force HTTPS
+        $force_https = getenv('FORCE_HTTPS') === 'true';
+        $is_production = getenv('IS_PRODUCTION') === 'true';
         
-        foreach ($production_domains as $domain) {
-            if (strpos($host, $domain) !== false) {
-                $is_production_domain = true;
-                break;
-            }
-        }
-        
-        // Force HTTPS for production domains
-        if ($is_production_domain) {
+        // If force HTTPS is enabled, use HTTPS
+        if ($force_https) {
+            $protocol = 'https';
+        } elseif ($is_production) {
+            // If it's production, use HTTPS
             $protocol = 'https';
         } else {
             // Check standard HTTPS indicators for other environments

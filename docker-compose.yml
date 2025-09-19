@@ -26,7 +26,7 @@ services:
     container_name: divinosys-web
     restart: always
     ports:
-      - "8081:80"
+      - "${APP_PORT:-8081}:80"
     volumes:
       - .:/var/www/html
     environment:
@@ -37,7 +37,7 @@ services:
       - DB_PASS=divino123
       - DB_CHARSET=utf8mb4
       - DB_COLLATION=utf8mb4_unicode_ci
-      - APP_URL=http://localhost:8081
+      - APP_URL=${APP_URL:-http://localhost:8081}
       - APP_ENV=development
       - APP_PROTOCOL=http
       - FORCE_HTTPS=false
