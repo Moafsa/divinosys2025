@@ -41,9 +41,15 @@ error_log("=== Iniciando nova tentativa de conexão ===");
 error_log("Servidor: " . $servidor);
 error_log("Banco: " . $dbname);
 
-// Database connection
+// Database connection with timeout settings
 global $conn;
 $conn = new mysqli($servidor, $usuario, $senha, $dbname);
+
+// Set connection timeout
+if ($conn) {
+    $conn->options(MYSQLI_OPT_CONNECT_TIMEOUT, 10);
+    $conn->options(MYSQLI_OPT_READ_TIMEOUT, 30);
+}
 
 // If connection fails, display error message
 if ($conn->connect_error) {
