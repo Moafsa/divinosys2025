@@ -19,10 +19,8 @@
 -- Current Database: `divinosys`
 --
 
-/*!40000 DROP DATABASE IF EXISTS `divinosys`*/;
-
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `divinosys` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-
+-- Database already created by Docker environment variables
+-- Just use the existing database
 USE `divinosys`;
 
 --
