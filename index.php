@@ -29,34 +29,40 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Incluir arquivos necessários
 require_once ROOT_PATH . "/mvc/model/config.php";
-require_once ROOT_PATH . "/mvc/model/conexao.php";
 
+// Tentar conectar ao banco, mas não falhar se não conseguir
 try {
-    // Definir o charset para UTF-8
-    if (!mysqli_set_charset($conn, "utf8")) {
-        throw new Exception("Erro ao definir charset UTF-8");
-    }
+    require_once ROOT_PATH . "/mvc/model/conexao.php";
+    
+    if (isset($conn) && $conn instanceof mysqli) {
+        // Definir o charset para UTF-8
+        if (!mysqli_set_charset($conn, "utf8")) {
+            error_log("Erro ao definir charset UTF-8");
+        }
 
-    // Consultar a cor do sistema usando prepared statement
-    $select_table = "SELECT cor FROM cor WHERE id = ?";
-    $stmt = mysqli_prepare($conn, $select_table);
-    
-    if (!$stmt) {
-        throw new Exception("Erro ao preparar consulta: " . mysqli_error($conn));
+        // Consultar a cor do sistema usando prepared statement
+        $select_table = "SELECT cor FROM cor WHERE id = ?";
+        $stmt = mysqli_prepare($conn, $select_table);
+        
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "i", $id);
+            $id = 1;
+            
+            if (mysqli_stmt_execute($stmt)) {
+                $result = mysqli_stmt_get_result($stmt);
+                $_SESSION['cor'] = ($row = mysqli_fetch_assoc($result)) ? strtolower($row['cor']) : 'danger';
+            } else {
+                $_SESSION['cor'] = 'danger';
+            }
+            
+            mysqli_stmt_close($stmt);
+        } else {
+            $_SESSION['cor'] = 'danger';
+        }
+    } else {
+        $_SESSION['cor'] = 'danger';
     }
     
-    mysqli_stmt_bind_param($stmt, "i", $id);
-    $id = 1;
-    
-    if (!mysqli_stmt_execute($stmt)) {
-        throw new Exception("Erro ao executar consulta: " . mysqli_stmt_error($stmt));
-    }
-    
-    $result = mysqli_stmt_get_result($stmt);
-    $_SESSION['cor'] = ($row = mysqli_fetch_assoc($result)) ? $row['cor'] : 'danger';
-    
-    mysqli_stmt_close($stmt);
-
 } catch (Exception $e) {
     error_log("Erro no index.php: " . $e->getMessage());
     $_SESSION['cor'] = 'danger';
