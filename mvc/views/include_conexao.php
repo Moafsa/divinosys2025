@@ -73,28 +73,12 @@ if (!$is_json_endpoint && session_status() === PHP_SESSION_NONE) {
 require_once(__DIR__ . "/../model/config.php");
 
 try {
-    // Obter configurações do banco de dados
-    $config = Config::get('db');
-    if (!$config) {
-        throw new Exception("Configurações do banco de dados não encontradas");
-    }
-
-    // Criar conexão usando as configurações da classe Config
-    $conn = mysqli_connect(
-        $config['host'],
-        $config['user'],
-        $config['pass'],
-        $config['name']
-    );
-
-    // Verificar conexão
-    if (!$conn) {
-        throw new Exception("Erro de conexão: " . mysqli_connect_error());
-    }
-
-    // Definir charset para UTF-8
-    if (!mysqli_set_charset($conn, "utf8")) {
-        throw new Exception("Erro ao definir charset: " . mysqli_error($conn));
+    // Usar a conexão global do arquivo conexao.php
+    require_once(__DIR__ . "/../model/conexao.php");
+    
+    // Verificar se a conexão foi estabelecida
+    if (!isset($conn) || !($conn instanceof mysqli)) {
+        throw new Exception("Conexão com banco de dados não estabelecida");
     }
 
 } catch (Exception $e) {
