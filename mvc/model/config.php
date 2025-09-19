@@ -47,15 +47,24 @@ class Config {
         // Host (domain) with port
         $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost:8080';
         
-        // Smart protocol detection
+        // Smart protocol detection - prioritize HTTPS detection
         $protocol = 'http'; // Default to HTTP
         
-        // Check if HTTPS is actually available
-        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
-            $protocol = 'https';
-        } elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-            $protocol = 'https';
-        } elseif (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on') {
+        // Check multiple indicators for HTTPS
+        $https_indicators = [
+            isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+            isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https',
+            isset($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on',
+            isset($_SERVER['HTTP_X_FORWARDED_PORT']) && $_SERVER['HTTP_X_FORWARDED_PORT'] === '443',
+            isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] === '443',
+            // Check if the request came through HTTPS (common in reverse proxies)
+            isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER['HTTP_X_FORWARDED_FOR']),
+            // Check if host contains HTTPS domain patterns
+            strpos($host, 'conext.click') !== false || strpos($host, 'coolify') !== false
+        ];
+        
+        // If any HTTPS indicator is true, use HTTPS
+        if (in_array(true, $https_indicators, true)) {
             $protocol = 'https';
         }
         
@@ -66,6 +75,8 @@ class Config {
         error_log("Environment: " . $this->config['environment']);
         error_log("HTTPS Server Var: " . ($_SERVER['HTTPS'] ?? 'not set'));
         error_log("X-Forwarded-Proto: " . ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'not set'));
+        error_log("X-Forwarded-SSL: " . ($_SERVER['HTTP_X_FORWARDED_SSL'] ?? 'not set'));
+        error_log("Server Port: " . ($_SERVER['SERVER_PORT'] ?? 'not set'));
         error_log("Protocol: {$protocol}");
         error_log("Host detected: {$host}");
         error_log("Base URL: {$baseUrl}");

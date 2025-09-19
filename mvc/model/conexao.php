@@ -23,15 +23,43 @@ if ($is_json_endpoint) {
 // Set default timezone
 date_default_timezone_set('America/Sao_Paulo');
 
-// Database connection settings - Use environment variables only
-$servidor = getenv('DB_HOST');
-$usuario = getenv('DB_USER');
-$senha = getenv('DB_PASS');
-$dbname = getenv('DB_NAME');
+// Database connection settings - Use environment variables with fallbacks
+function getEnvVar($name, $default = null) {
+    // Try getenv() first
+    $value = getenv($name);
+    if ($value !== false) {
+        return $value;
+    }
+    
+    // Try $_ENV
+    if (isset($_ENV[$name])) {
+        return $_ENV[$name];
+    }
+    
+    // Try $_SERVER
+    if (isset($_SERVER[$name])) {
+        return $_SERVER[$name];
+    }
+    
+    return $default;
+}
 
-// Validate required environment variables
-if (!$servidor || !$usuario || !$senha || !$dbname) {
+$servidor = getEnvVar('DB_HOST', 'db');
+$usuario = getEnvVar('DB_USER', 'divino');
+$senha = getEnvVar('DB_PASS', 'divino123');
+$dbname = getEnvVar('DB_NAME', 'divinosys');
+
+// Log the values being used (without password)
+error_log("Database connection attempt:");
+error_log("Host: {$servidor}");
+error_log("User: {$usuario}");
+error_log("Database: {$dbname}");
+error_log("Password: " . (empty($senha) ? 'EMPTY' : 'SET'));
+
+// Validate required database variables
+if (!$servidor || !$usuario || !$dbname) {
     error_log("ERROR: Missing required database environment variables");
+    error_log("Available env vars: " . print_r($_ENV, true));
     die("Database configuration error. Please check environment variables.");
 }
 
