@@ -44,24 +44,28 @@ class Config {
     }
 
     private function detectBaseUrl() {
-        // Force HTTPS in production, use HTTP in development
-        $isProduction = $this->config['environment'] === 'production';
-        
-        // Protocol detection - force HTTPS in production
-        if ($isProduction) {
-            $protocol = 'https';
-        } else {
-            $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-        }
-        
         // Host (domain) with port
         $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost:8080';
+        
+        // Smart protocol detection
+        $protocol = 'http'; // Default to HTTP
+        
+        // Check if HTTPS is actually available
+        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+            $protocol = 'https';
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+            $protocol = 'https';
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on') {
+            $protocol = 'https';
+        }
         
         // Base path
         $baseUrl = "{$protocol}://{$host}";
         
         // Debug logs
         error_log("Environment: " . $this->config['environment']);
+        error_log("HTTPS Server Var: " . ($_SERVER['HTTPS'] ?? 'not set'));
+        error_log("X-Forwarded-Proto: " . ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'not set'));
         error_log("Protocol: {$protocol}");
         error_log("Host detected: {$host}");
         error_log("Base URL: {$baseUrl}");
