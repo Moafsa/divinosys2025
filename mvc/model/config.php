@@ -25,12 +25,18 @@ class Config {
         if (!$this->config['db']['host'] || !$this->config['db']['user'] || 
             !$this->config['db']['pass'] || !$this->config['db']['name']) {
             error_log("ERROR: Missing required database environment variables in config.php");
-            die("Database configuration error. Please check environment variables.");
+            // Don't die here, let the connection handle the error
+            $this->config['db'] = [
+                'host' => 'db',
+                'user' => 'divino', 
+                'pass' => 'divino123',
+                'name' => 'divinosys'
+            ];
         }
 
         // Configurações de URL
         $this->baseUrl = $this->detectBaseUrl();
-        $this->config['assets_url'] = rtrim($this->baseUrl, '/') . '/assets';
+        $this->config['assets_url'] = '/assets';
         
         // Log para debug
         error_log("Base URL detectada: " . $this->baseUrl);
@@ -153,7 +159,7 @@ class Config {
 
     public function getAssetsUrl($path = '') {
         $path = trim($path, '/');
-        return rtrim($this->baseUrl, '/') . '/mvc/common/' . $path;
+        return '/mvc/common/' . $path;
     }
 
     public static function assets($path = '') {
