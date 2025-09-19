@@ -80,5 +80,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-header('Location: ../../?view=gerenciar_produtos');
+header('Location: ' . url('?view=gerenciar_produtos'));
 exit; 

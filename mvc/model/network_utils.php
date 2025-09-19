@@ -40,16 +40,49 @@ class NetworkUtils {
         $ip = self::getLocalIP();
         $port = $_SERVER['SERVER_PORT'] ?? '8080';
         
+        // Detect protocol based on environment
+        $protocol = 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? "{$ip}:{$port}";
+        
+        // Check if this is a production domain that should use HTTPS
+        $production_domains = ['conext.click', 'coolify', 'app', 'divinosys'];
+        $is_production_domain = false;
+        
+        foreach ($production_domains as $domain) {
+            if (strpos($host, $domain) !== false) {
+                $is_production_domain = true;
+                break;
+            }
+        }
+        
+        // Force HTTPS for production domains
+        if ($is_production_domain) {
+            $protocol = 'https';
+        } else {
+            // Check standard HTTPS indicators for local development
+            $https_indicators = [
+                isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+                isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https',
+                isset($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on',
+                isset($_SERVER['HTTP_X_FORWARDED_PORT']) && $_SERVER['HTTP_X_FORWARDED_PORT'] === '443',
+                isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] === '443'
+            ];
+            
+            if (in_array(true, $https_indicators, true)) {
+                $protocol = 'https';
+            }
+        }
+        
         // Generate specific URLs based on user type
         switch ($type) {
             case 'kitchen':
-                return "http://{$ip}:{$port}/?view=kitchen";
+                return "{$protocol}://{$host}/?view=kitchen";
             case 'waiter':
-                return "http://{$ip}:{$port}/?view=waiter";
+                return "{$protocol}://{$host}/?view=waiter";
             case 'cashier':
-                return "http://{$ip}:{$port}/?view=Dashboard1";
+                return "{$protocol}://{$host}/?view=Dashboard1";
             default:
-                return "http://{$ip}:{$port}/";
+                return "{$protocol}://{$host}/";
         }
     }
 } 

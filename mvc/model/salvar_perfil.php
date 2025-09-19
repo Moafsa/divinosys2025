@@ -30,12 +30,12 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
 
     if (!in_array($fileExt, $allowed)) {
         $_SESSION['msg'] = 'Invalid image type.';
-        header('Location: ../views/perfil.php');
+        header('Location: ' . url('?view=perfil'));
         exit;
     }
     if ($_FILES['logo']['size'] > $maxSize) {
         $_SESSION['msg'] = 'Image too large (max 2MB).';
-        header('Location: ../views/perfil.php');
+        header('Location: ' . url('?view=perfil'));
         exit;
     }
     $newName = 'logo_' . time() . '.' . $fileExt;
@@ -44,7 +44,7 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
         $config['logo'] = $newName;
     } else {
         $_SESSION['msg'] = 'Failed to upload logo.';
-        header('Location: ../views/perfil.php');
+        header('Location: ' . url('?view=perfil'));
         exit;
     }
 } else if (!empty($_POST['logo_atual'])) {
