@@ -1,13 +1,15 @@
-# Force HTTPS
+# Force HTTPS (if available)
 RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# Security headers
-Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-Header always set X-Content-Type-Options nosniff
-Header always set X-Frame-Options DENY
-Header always set X-XSS-Protection "1; mode=block"
+# Security headers (if mod_headers is available)
+<IfModule mod_headers.c>
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+</IfModule>
 
 # PHP settings
 php_value upload_max_filesize 64M

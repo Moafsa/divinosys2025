@@ -44,8 +44,15 @@ class Config {
     }
 
     private function detectBaseUrl() {
-        // Protocol (http or https)
-        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        // Force HTTPS in production, use HTTP in development
+        $isProduction = $this->config['environment'] === 'production';
+        
+        // Protocol detection - force HTTPS in production
+        if ($isProduction) {
+            $protocol = 'https';
+        } else {
+            $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        }
         
         // Host (domain) with port
         $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost:8080';
@@ -54,6 +61,8 @@ class Config {
         $baseUrl = "{$protocol}://{$host}";
         
         // Debug logs
+        error_log("Environment: " . $this->config['environment']);
+        error_log("Protocol: {$protocol}");
         error_log("Host detected: {$host}");
         error_log("Base URL: {$baseUrl}");
         
