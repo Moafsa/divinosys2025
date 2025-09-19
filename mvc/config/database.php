@@ -1,11 +1,11 @@
 <?php
 
 return [
-    'host' => getenv('DB_HOST') ?: 'db',
+    'host' => getenv('DB_HOST'),
     'port' => getenv('DB_PORT') ?: '3306',
-    'database' => getenv('DB_NAME') ?: 'divinosys',
-    'user' => getenv('DB_USER') ?: 'divino',
-    'password' => getenv('DB_PASS') ?: 'divino123',
+    'database' => getenv('DB_NAME'),
+    'user' => getenv('DB_USER'),
+    'password' => getenv('DB_PASS'),
     'charset' => getenv('DB_CHARSET') ?: 'utf8mb4',
     'collation' => getenv('DB_COLLATION') ?: 'utf8mb4_unicode_ci',
     'options' => [

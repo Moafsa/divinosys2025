@@ -13,13 +13,20 @@ class Config {
         // Detecta o ambiente automaticamente
         $this->detectEnvironment();
         
-        // Configurações do banco de dados
+        // Configurações do banco de dados - Use environment variables only
         $this->config['db'] = [
-            'host' => 'db',
-            'user' => 'divino',
-            'pass' => 'divino123',
-            'name' => 'divinosys'
+            'host' => getenv('DB_HOST'),
+            'user' => getenv('DB_USER'),
+            'pass' => getenv('DB_PASS'),
+            'name' => getenv('DB_NAME')
         ];
+
+        // Validate required database environment variables
+        if (!$this->config['db']['host'] || !$this->config['db']['user'] || 
+            !$this->config['db']['pass'] || !$this->config['db']['name']) {
+            error_log("ERROR: Missing required database environment variables in config.php");
+            die("Database configuration error. Please check environment variables.");
+        }
 
         // Configurações de URL
         $this->baseUrl = $this->detectBaseUrl();

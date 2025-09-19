@@ -24,8 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     logDebug("POST data: " . print_r($_POST, true));
     
     try {
-        // Conectar ao banco
-        $conn = new mysqli('localhost', 'root', '', 'pdv');
+        // Conectar ao banco usando variáveis de ambiente
+        $host = getenv('DB_HOST') ?: 'db';
+        $user = getenv('DB_USER') ?: 'divino';
+        $pass = getenv('DB_PASS') ?: 'divino123';
+        $db = getenv('DB_NAME') ?: 'divinosys';
+        
+        $conn = new mysqli($host, $user, $pass, $db);
         
         if ($conn->connect_error) {
             throw new Exception("Erro de conexão: " . $conn->connect_error);

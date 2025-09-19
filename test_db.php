@@ -5,7 +5,13 @@ ini_set('display_errors', 1);
 echo "<h1>Teste do Sistema</h1>";
 
 try {
-    $conn = mysqli_connect('db', 'pdv', 'pdv123', 'pdv');
+    // Use environment variables for database connection
+    $host = getenv('DB_HOST') ?: 'db';
+    $user = getenv('DB_USER') ?: 'divino';
+    $pass = getenv('DB_PASS') ?: 'divino123';
+    $db = getenv('DB_NAME') ?: 'divinosys';
+    
+    $conn = mysqli_connect($host, $user, $pass, $db);
     echo "<p style='color: green'>✓ Conexão com banco de dados OK!</p>";
     
     $tables = mysqli_query($conn, "SHOW TABLES");
