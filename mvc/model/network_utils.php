@@ -38,7 +38,7 @@ class NetworkUtils {
 
     public static function generateAccessURL($type = 'default') {
         $ip = self::getLocalIP();
-        $port = $_SERVER['SERVER_PORT'] ?? '8080';
+        $port = $_SERVER['SERVER_PORT'] ?? (getenv('APP_URL') ? parse_url(getenv('APP_URL'), PHP_URL_PORT) : '80');
         
         // Detect protocol based on environment variables
         $protocol = getenv('APP_PROTOCOL') ?: 'http';

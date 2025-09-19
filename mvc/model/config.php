@@ -50,8 +50,8 @@ class Config {
     }
 
     private function detectBaseUrl() {
-        // Host (domain) with port
-        $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost:8081';
+        // Host (domain) with port - get from environment or server
+        $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (getenv('APP_URL') ? parse_url(getenv('APP_URL'), PHP_URL_HOST) . (parse_url(getenv('APP_URL'), PHP_URL_PORT) ? ':' . parse_url(getenv('APP_URL'), PHP_URL_PORT) : '') : 'localhost');
         
         // Get protocol from environment variables
         $protocol = getenv('APP_PROTOCOL') ?: 'http';
