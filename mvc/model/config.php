@@ -86,7 +86,8 @@ class Config {
         
         // Debug logs
         error_log("Environment: " . $this->config['environment']);
-        error_log("Is Production Domain: " . ($is_production_domain ? 'YES' : 'NO'));
+        error_log("Force HTTPS: " . ($force_https ? 'YES' : 'NO'));
+        error_log("Is Production: " . ($is_production ? 'YES' : 'NO'));
         error_log("HTTPS Server Var: " . ($_SERVER['HTTPS'] ?? 'not set'));
         error_log("X-Forwarded-Proto: " . ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'not set'));
         error_log("X-Forwarded-SSL: " . ($_SERVER['HTTP_X_FORWARDED_SSL'] ?? 'not set'));

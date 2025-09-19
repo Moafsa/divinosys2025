@@ -76,7 +76,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
     // Se não estiver logado e não for uma requisição de login, mostrar o formulário
     if (!$is_login_request) {
         $_SESSION['msg'] = "<div class='alert alert-danger'>Acesso não autorizado! Faça login primeiro.</div>";
-        header("Location: " . Config::getInstance()->url('index.php'));
+        header("Location: index.php");
         exit;
     }
 ?>

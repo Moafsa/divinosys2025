@@ -99,7 +99,7 @@ try {
 
                 // Redirecionar para o dashboard
                 $config = Config::getInstance();
-                header("Location: " . $config->url('index.php?view=Dashboard1'));
+                header("Location: ../../index.php?view=Dashboard1");
                 exit();
             } else {
                 logDebug("Senha incorreta para o usuário: " . $login);
@@ -118,7 +118,7 @@ try {
     logDebug("Erro no processo de login: " . $e->getMessage());
     $_SESSION['msg'] = "<div class='alert alert-danger'>" . htmlspecialchars($e->getMessage()) . "</div>";
     $config = Config::getInstance();
-    header("Location: " . $config->url('index.php'));
+    header("Location: ../../index.php");
     exit();
 } finally {
     // Garantir que a conexão seja fechada
