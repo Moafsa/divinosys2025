@@ -23,11 +23,11 @@
 
 	if(mysqli_affected_rows($conn)!=-1){
 
-		echo "<META HTTP-EQUIV=REFRESH CONTENT = '0;URL=http://localhost/Pdv/?view=tabela'>";
+		echo "<META HTTP-EQUIV=REFRESH CONTENT = '0;URL=url('?view=tabela')'>";
 		$_SESSION['msg'] = "<div class='alert alert-success' role='alert'>O Produto foi Excluido com Sucesso<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>";
 	}else{
 
-		echo "<META HTTP-EQUIV=REFRESH CONTENT = '0;URL=http://localhost/Pdv/?view=tabela'>";	
+		echo "<META HTTP-EQUIV=REFRESH CONTENT = '0;URL=url('?view=tabela')'>";	
 		$_SESSION['msg'] = "<div class='alert alert-danger' role='alert'>Erro ao excluir Produto <button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>";
 	}?>
 

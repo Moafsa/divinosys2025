@@ -73,7 +73,7 @@ if ($total == 0) {
 	$exclude_table = "DELETE FROM pedido WHERE idmesa = '$id'";	
 	$produto_excluido = mysqli_query($conn, $exclude_table);
 
-	echo "<META HTTP-EQUIV=REFRESH CONTENT = '0;URL=http://localhost/Pdv/?view=Dashboard1'>";
+	echo "<META HTTP-EQUIV=REFRESH CONTENT = '0;URL=" . url('?view=Dashboard1') . "'>";
 	$_SESSION['msg'] = "<div class='alert alert-success' role='alert'> Comanda da Mesa encerrada com sucesso!<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>";
 
 }else if ($total < 0) {
