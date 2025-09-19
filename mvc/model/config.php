@@ -25,12 +25,12 @@ class Config {
         if (!$this->config['db']['host'] || !$this->config['db']['user'] || 
             !$this->config['db']['pass'] || !$this->config['db']['name']) {
             error_log("ERROR: Missing required database environment variables in config.php");
-            // Don't die here, let the connection handle the error
+            // Set empty values - connection will handle the error gracefully
             $this->config['db'] = [
-                'host' => 'db',
-                'user' => 'divino', 
-                'pass' => 'divino123',
-                'name' => 'divinosys'
+                'host' => null,
+                'user' => null, 
+                'pass' => null,
+                'name' => null
             ];
         }
 

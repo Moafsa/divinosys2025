@@ -60,7 +60,9 @@ error_log("Password: " . (empty($senha) ? 'EMPTY' : 'SET'));
 if (!$servidor || !$usuario || !$dbname) {
     error_log("ERROR: Missing required database environment variables");
     error_log("Available env vars: " . print_r($_ENV, true));
-    die("Database configuration error. Please check environment variables.");
+    // Don't die here, but don't hardcode credentials either
+    // The connection will fail gracefully and the system will show appropriate error
+    error_log("Database connection will fail - environment variables not set");
 }
 
 // Debug: Print environment variables
@@ -77,22 +79,22 @@ error_log("Banco: " . $dbname);
 
 // Database connection with timeout settings
 global $conn;
-$conn = new mysqli($servidor, $usuario, $senha, $dbname);
 
-// Set connection timeout
-if ($conn) {
-    $conn->options(MYSQLI_OPT_CONNECT_TIMEOUT, 10);
-    $conn->options(MYSQLI_OPT_READ_TIMEOUT, 30);
-}
+// Only attempt connection if we have valid credentials
+if ($servidor && $usuario && $dbname) {
+    $conn = new mysqli($servidor, $usuario, $senha, $dbname);
 
-// If connection fails, display error message
-if ($conn->connect_error) {
-    echo "<div style='color: red; font-weight: bold; text-align: center; margin-top: 20px;'>";
-    echo "Connection Error: Could not connect to database.";
-    echo "</div>";
-    error_log("Main connection failure: " . $conn->connect_error);
-    // Don't kill execution to allow page to load with appropriate message
-} else {
+    // Set connection timeout
+    if ($conn) {
+        $conn->options(MYSQLI_OPT_CONNECT_TIMEOUT, 10);
+        $conn->options(MYSQLI_OPT_READ_TIMEOUT, 30);
+    }
+
+    // If connection fails, display error message
+    if ($conn->connect_error) {
+        error_log("Main connection failure: " . $conn->connect_error);
+        $conn = null; // Set to null so other parts can check
+    } else {
     // Set charset to UTF-8
     mysqli_set_charset($conn, "utf8");
 
@@ -114,6 +116,10 @@ if ($conn->connect_error) {
     // Define constant to indicate successful connection
     define('DB_CONNECTION_SUCCESS', true);
     error_log("=== Conexão estabelecida com sucesso! ===");
+    }
+} else {
+    error_log("Database connection skipped - missing environment variables");
+    $conn = null;
 }
 
 // Function to safely close database connection
