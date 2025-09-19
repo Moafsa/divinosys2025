@@ -34,7 +34,7 @@ include_once "conexao.php";
 		$insert_table = "UPDATE mesas SET status = '2', nome = '$cliente' WHERE id_mesa = $mesa";
 		$adiciona_pedido = mysqli_query($conn, $insert_table);
 
-header("Location: ../app/app_mesas.php");
+header("Location: " . url('?view=mesas'));
 
 		$conn->close();
 

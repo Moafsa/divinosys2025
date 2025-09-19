@@ -60,7 +60,7 @@ try {
     $mysqli->close();
 
     $_SESSION['msg'] = "Pedido adicionado com sucesso!";
-    header("Location: " . Config::url("?view=novo_pedido&mesa=" . $id_mesa . "&cliente=" . urlencode($cliente)));
+    header("Location: " . url("?view=novo_pedido&mesa=" . $id_mesa . "&cliente=" . urlencode($cliente)));
     exit();
 
 } catch (Exception $e) {
@@ -71,7 +71,7 @@ try {
     $_SESSION['msg_erro'] = "Não foi possível adicionar o pedido. Por favor, tente novamente.";
     
     // Redireciona de volta mantendo os dados da mesa e cliente
-    header("Location: " . Config::url("?view=novo_pedido&mesa=" . $_POST['id_mesa'] . "&cliente=" . urlencode($_POST['cliente'] ?? '')));
+    header("Location: " . url("?view=novo_pedido&mesa=" . $_POST['id_mesa'] . "&cliente=" . urlencode($_POST['cliente'] ?? '')));
     exit();
 }
 

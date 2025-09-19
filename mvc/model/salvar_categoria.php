@@ -12,7 +12,7 @@ error_log("Session: " . print_r($_SESSION, true));
 // Verificar se está logado
 if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
     $_SESSION['msg'] = "<div class='alert alert-danger'>Acesso não autorizado! Faça login primeiro.</div>";
-    header("Location: " . $config->url(''));
+    header("Location: " . url(''));
     exit;
 }
 
@@ -27,7 +27,7 @@ error_log("FILES data: " . print_r($_FILES, true));
 // Validar nome
 if (empty($nome)) {
     $_SESSION['msg'] = "<div class='alert alert-danger'>O nome da categoria é obrigatório!</div>";
-    header("Location: " . $config->url('?view=gerenciar_categorias'));
+    header("Location: " . url('?view=gerenciar_categorias'));
     exit;
 }
 

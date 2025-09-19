@@ -8,7 +8,7 @@ $config = Config::getInstance();
 // Verificar se está logado
 if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
     $_SESSION['msg'] = "<div class='alert alert-danger'>Acesso não autorizado! Faça login primeiro.</div>";
-    header("Location: " . $config->url(''));
+    header("Location: " . url(''));
     exit;
 }
 
@@ -19,7 +19,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
         'text' => 'ID da categoria não fornecido ou inválido',
         'icon' => 'error'
     ]);
-    header("Location: " . $config->url('?view=gerenciar_categorias'));
+    header("Location: " . url('?view=gerenciar_categorias'));
     exit;
 }
 

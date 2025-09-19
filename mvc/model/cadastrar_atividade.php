@@ -23,7 +23,7 @@
 
 	$insert_table = "INSERT INTO atividade (title, atividade, ordem, condicao, start, color, end) VALUES ('$title', '$atividade', '$ordem', '1', '$hoje', '#084b39', '$end')";	
 	$produtos_editados = mysqli_query($conn, $insert_table);
-	header("Location: ?view=cards");
+	header("Location: " . url('?view=cards'));
 
 	$conn->close();
 

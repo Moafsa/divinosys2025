@@ -150,6 +150,6 @@ try {
 	$_SESSION['msg'] = "<div class='alert alert-danger' role='alert'>Erro ao atualizar produto: " . htmlspecialchars($e->getMessage()) . "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>";
 } finally {
 	mysqli_close($conn);
-	header("Location: " . $config->url('?view=tabela'));
+	header("Location: " . url('?view=tabela'));
 	exit;
 }
