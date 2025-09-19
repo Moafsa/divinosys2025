@@ -44,10 +44,10 @@ function getEnvVar($name, $default = null) {
     return $default;
 }
 
-$servidor = getEnvVar('DB_HOST', 'db');
-$usuario = getEnvVar('DB_USER', 'divino');
-$senha = getEnvVar('DB_PASS', 'divino123');
-$dbname = getEnvVar('DB_NAME', 'divinosys');
+$servidor = getEnvVar('DB_HOST');
+$usuario = getEnvVar('DB_USER');
+$senha = getEnvVar('DB_PASS');
+$dbname = getEnvVar('DB_NAME');
 
 // Log the values being used (without password)
 error_log("Database connection attempt:");
