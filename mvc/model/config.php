@@ -53,35 +53,49 @@ class Config {
         // Host (domain) with port
         $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost:8080';
         
-        // Force HTTPS for production domains (Coolify)
-        $protocol = 'http'; // Default to HTTP
+        // Default to HTTP for local development
+        $protocol = 'http';
         
-        // Check if this is a production domain that should use HTTPS
-        $production_domains = ['conext.click', 'coolify', 'app', 'divinosys'];
-        $is_production_domain = false;
+        // Check if this is a local development environment
+        $is_local = (
+            strpos($host, 'localhost') !== false ||
+            strpos($host, '127.0.0.1') !== false ||
+            strpos($host, '192.168.') !== false ||
+            strpos($host, '10.0.') !== false ||
+            strpos($host, '172.') !== false
+        );
         
-        foreach ($production_domains as $domain) {
-            if (strpos($host, $domain) !== false) {
-                $is_production_domain = true;
-                break;
-            }
-        }
-        
-        // Force HTTPS for production domains
-        if ($is_production_domain) {
-            $protocol = 'https';
+        // If it's local, always use HTTP
+        if ($is_local) {
+            $protocol = 'http';
         } else {
-            // Check standard HTTPS indicators for local development
-            $https_indicators = [
-                isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
-                isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https',
-                isset($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on',
-                isset($_SERVER['HTTP_X_FORWARDED_PORT']) && $_SERVER['HTTP_X_FORWARDED_PORT'] === '443',
-                isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] === '443'
-            ];
+            // Check if this is a production domain that should use HTTPS
+            $production_domains = ['conext.click', 'coolify', 'app', 'divinosys'];
+            $is_production_domain = false;
             
-            if (in_array(true, $https_indicators, true)) {
+            foreach ($production_domains as $domain) {
+                if (strpos($host, $domain) !== false) {
+                    $is_production_domain = true;
+                    break;
+                }
+            }
+            
+            // Force HTTPS for production domains
+            if ($is_production_domain) {
                 $protocol = 'https';
+            } else {
+                // Check standard HTTPS indicators for other environments
+                $https_indicators = [
+                    isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+                    isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https',
+                    isset($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on',
+                    isset($_SERVER['HTTP_X_FORWARDED_PORT']) && $_SERVER['HTTP_X_FORWARDED_PORT'] === '443',
+                    isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] === '443'
+                ];
+                
+                if (in_array(true, $https_indicators, true)) {
+                    $protocol = 'https';
+                }
             }
         }
         
