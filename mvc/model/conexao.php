@@ -23,11 +23,11 @@ if ($is_json_endpoint) {
 // Set default timezone
 date_default_timezone_set('America/Sao_Paulo');
 
-// Database connection settings
-$servidor = "db"; // Docker service name from docker-compose.yml
-$usuario = "divino";
-$senha = "divino123";
-$dbname = "divinosys";
+// Database connection settings - Use environment variables with fallbacks
+$servidor = getenv('DB_HOST') ?: "db"; // Docker service name from docker-compose.yml
+$usuario = getenv('DB_USER') ?: "divino";
+$senha = getenv('DB_PASS') ?: "divino123";
+$dbname = getenv('DB_NAME') ?: "divinosys";
 
 // Debug: Print environment variables
 error_log("=== DEBUG: Variáveis de Ambiente ===");
