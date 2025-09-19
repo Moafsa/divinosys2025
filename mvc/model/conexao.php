@@ -23,11 +23,17 @@ if ($is_json_endpoint) {
 // Set default timezone
 date_default_timezone_set('America/Sao_Paulo');
 
-// Database connection settings - Use environment variables with fallbacks
-$servidor = getenv('DB_HOST') ?: "db"; // Docker service name from docker-compose.yml
-$usuario = getenv('DB_USER') ?: "divino";
-$senha = getenv('DB_PASS') ?: "divino123";
-$dbname = getenv('DB_NAME') ?: "divinosys";
+// Database connection settings - Use environment variables only
+$servidor = getenv('DB_HOST');
+$usuario = getenv('DB_USER');
+$senha = getenv('DB_PASS');
+$dbname = getenv('DB_NAME');
+
+// Validate required environment variables
+if (!$servidor || !$usuario || !$senha || !$dbname) {
+    error_log("ERROR: Missing required database environment variables");
+    die("Database configuration error. Please check environment variables.");
+}
 
 // Debug: Print environment variables
 error_log("=== DEBUG: Variáveis de Ambiente ===");
