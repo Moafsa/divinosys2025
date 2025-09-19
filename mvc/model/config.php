@@ -119,13 +119,13 @@ class Config {
         // Remove barras iniciais e finais
         $path = trim($path, '/');
         
-        // Se o caminho estiver vazio, retorna a URL base
+        // Se o caminho estiver vazio, retorna apenas a barra
         if (empty($path)) {
-            return rtrim($this->baseUrl, '/');
+            return '/';
         }
         
-        // Monta a URL completa
-        $url = rtrim($this->baseUrl, '/') . '/' . $path;
+        // Usar caminho relativo para evitar problemas de Mixed Content
+        $url = '/' . $path;
         
         // Log para debug
         error_log("URL Gerada para {$path}: {$url}");
