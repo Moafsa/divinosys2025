@@ -29,6 +29,16 @@ services:
       - "8081:80"
     volumes:
       - .:/var/www/html
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=divinosys
+      - DB_USER=divino
+      - DB_PASS=divino123
+      - DB_CHARSET=utf8mb4
+      - DB_COLLATION=utf8mb4_unicode_ci
+      - APP_URL=http://localhost:8081
+      - APP_ENV=development
     depends_on:
       - db
     networks:
