@@ -50,30 +50,30 @@ class Config {
     }
 
     private function detectBaseUrl() {
-        // Host (domain) with port - get from environment or server
-        $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (getenv('APP_URL') ? parse_url(getenv('APP_URL'), PHP_URL_HOST) . (parse_url(getenv('APP_URL'), PHP_URL_PORT) ? ':' . parse_url(getenv('APP_URL'), PHP_URL_PORT) : '') : 'localhost');
+        // Get protocol from environment variables first
+        $protocol = getenv('APP_PROTOCOL') ?: 'http';
         
-        // Force HTTPS for production domains or when explicitly set
+        // Get host from environment or server
+        $app_url = getenv('APP_URL');
+        if ($app_url) {
+            $parsed_url = parse_url($app_url);
+            $protocol = $parsed_url['scheme'] ?? $protocol;
+            $host = $parsed_url['host'] ?? $_SERVER['HTTP_HOST'] ?? 'localhost';
+            if (isset($parsed_url['port'])) {
+                $host .= ':' . $parsed_url['port'];
+            }
+        } else {
+            $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        }
+        
+        // Check if we should force HTTPS from environment
         $force_https = getenv('FORCE_HTTPS') === 'true';
         $is_production = getenv('IS_PRODUCTION') === 'true';
         
-        // Check if host is a production domain (not localhost or IP)
-        $is_production_domain = !in_array($host, ['localhost', '127.0.0.1']) && 
-                               !preg_match('/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/', $host) &&
-                               !preg_match('/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+/', $host);
-        
-        // Determine protocol - force HTTPS for production domains
-        $protocol = 'http'; // Default
-        
-        // Force HTTPS for known production domains
-        $production_domains = ['divinosys.conext.click', 'conext.click'];
-        $is_known_production = in_array($host, $production_domains) || 
-                              preg_match('/\.conext\.click$/', $host);
-        
-        if ($force_https || $is_production || $is_production_domain || $is_known_production) {
+        if ($force_https || $is_production) {
             $protocol = 'https';
         } else {
-            // Check standard HTTPS indicators for development
+            // Check standard HTTPS indicators for automatic detection
             $https_indicators = [
                 isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
                 isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https',
@@ -88,23 +88,21 @@ class Config {
             }
         }
         
-        // Base path
+        // Build base URL
         $baseUrl = "{$protocol}://{$host}";
         
         // Debug logs
-        error_log("Environment: " . $this->config['environment']);
-        error_log("Force HTTPS: " . ($force_https ? 'YES' : 'NO'));
-        error_log("Is Production: " . ($is_production ? 'YES' : 'NO'));
-        error_log("Is Production Domain: " . ($is_production_domain ? 'YES' : 'NO'));
-        error_log("Is Known Production: " . ($is_known_production ? 'YES' : 'NO'));
+        error_log("=== CONFIG DEBUG START ===");
+        error_log("APP_PROTOCOL from env: " . (getenv('APP_PROTOCOL') ?: 'not set'));
+        error_log("APP_URL from env: " . (getenv('APP_URL') ?: 'not set'));
+        error_log("FORCE_HTTPS: " . ($force_https ? 'YES' : 'NO'));
+        error_log("IS_PRODUCTION: " . ($is_production ? 'YES' : 'NO'));
         error_log("HTTPS Server Var: " . ($_SERVER['HTTPS'] ?? 'not set'));
         error_log("X-Forwarded-Proto: " . ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'not set'));
-        error_log("X-Forwarded-SSL: " . ($_SERVER['HTTP_X_FORWARDED_SSL'] ?? 'not set'));
-        error_log("Server Port: " . ($_SERVER['SERVER_PORT'] ?? 'not set'));
-        error_log("Request Scheme: " . ($_SERVER['REQUEST_SCHEME'] ?? 'not set'));
-        error_log("Protocol: {$protocol}");
+        error_log("Final Protocol: {$protocol}");
         error_log("Host detected: {$host}");
         error_log("Base URL: {$baseUrl}");
+        error_log("=== CONFIG DEBUG END ===");
         
         return $baseUrl;
     }
