@@ -50,14 +50,10 @@ class Config {
     }
 
     private function detectBaseUrl() {
-        // Get protocol from environment variables first
-        $protocol = getenv('APP_PROTOCOL') ?: 'http';
-        
         // Get host from environment or server
         $app_url = getenv('APP_URL');
         if ($app_url) {
             $parsed_url = parse_url($app_url);
-            $protocol = $parsed_url['scheme'] ?? $protocol;
             $host = $parsed_url['host'] ?? $_SERVER['HTTP_HOST'] ?? 'localhost';
             if (isset($parsed_url['port'])) {
                 $host .= ':' . $parsed_url['port'];
@@ -66,14 +62,32 @@ class Config {
             $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
         }
         
-        // Check if we should force HTTPS from environment
+        // Determine protocol - prioritize environment variables
+        $protocol = 'http'; // Default
+        
+        // Check environment variables first
         $force_https = getenv('FORCE_HTTPS') === 'true';
         $is_production = getenv('IS_PRODUCTION') === 'true';
+        $app_protocol = getenv('APP_PROTOCOL');
         
-        if ($force_https || $is_production) {
+        // If APP_URL is set with https scheme, use it
+        if ($app_url && isset($parsed_url['scheme']) && $parsed_url['scheme'] === 'https') {
             $protocol = 'https';
-        } else {
-            // Check standard HTTPS indicators for automatic detection
+        }
+        // If APP_PROTOCOL is explicitly set to https, use it
+        elseif ($app_protocol === 'https') {
+            $protocol = 'https';
+        }
+        // If FORCE_HTTPS is true, force HTTPS
+        elseif ($force_https) {
+            $protocol = 'https';
+        }
+        // If IS_PRODUCTION is true, force HTTPS
+        elseif ($is_production) {
+            $protocol = 'https';
+        }
+        // Otherwise, check standard HTTPS indicators
+        else {
             $https_indicators = [
                 isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
                 isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https',
@@ -93,8 +107,8 @@ class Config {
         
         // Debug logs
         error_log("=== CONFIG DEBUG START ===");
-        error_log("APP_PROTOCOL from env: " . (getenv('APP_PROTOCOL') ?: 'not set'));
-        error_log("APP_URL from env: " . (getenv('APP_URL') ?: 'not set'));
+        error_log("APP_URL: " . ($app_url ?: 'not set'));
+        error_log("APP_PROTOCOL: " . ($app_protocol ?: 'not set'));
         error_log("FORCE_HTTPS: " . ($force_https ? 'YES' : 'NO'));
         error_log("IS_PRODUCTION: " . ($is_production ? 'YES' : 'NO'));
         error_log("HTTPS Server Var: " . ($_SERVER['HTTPS'] ?? 'not set'));
