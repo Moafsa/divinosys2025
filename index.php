@@ -33,47 +33,15 @@ require_once ROOT_PATH . "/mvc/model/config.php";
 // DEBUG MODE - Add ?debug=1 to URL to see environment variables
 if (isset($_GET['debug']) && $_GET['debug'] === '1') {
     header('Content-Type: text/plain');
-    echo "=== ENVIRONMENT DEBUG ===\n\n";
+    echo "=== ULTRA SIMPLE DEBUG ===\n\n";
     
-    // Check environment variables
-    $env_vars = ['APP_URL', 'APP_PROTOCOL', 'FORCE_HTTPS', 'IS_PRODUCTION', 'APP_ENV'];
-    foreach ($env_vars as $var) {
-        $value = getenv($var);
-        echo "getenv('{$var}'): " . ($value ?: 'NOT SET') . "\n";
-    }
+    echo "HTTP_HOST: " . ($_SERVER['HTTP_HOST'] ?? 'NOT SET') . "\n";
+    echo "HTTPS: " . ($_SERVER['HTTPS'] ?? 'NOT SET') . "\n";
+    echo "REQUEST_SCHEME: " . ($_SERVER['REQUEST_SCHEME'] ?? 'NOT SET') . "\n";
     
-    echo "\n=== SERVER VARIABLES ===\n";
-    $server_vars = ['HTTP_HOST', 'HTTPS', 'REQUEST_SCHEME', 'HTTP_X_FORWARDED_PROTO'];
-    foreach ($server_vars as $var) {
-        $value = $_SERVER[$var] ?? 'NOT SET';
-        echo "\$_SERVER['{$var}']: {$value}\n";
-    }
-    
-    echo "\n=== CONFIG TEST ===\n";
-    try {
-        $config = Config::getInstance();
-        echo "Config Base URL: " . $config->getBaseUrl() . "\n";
-        echo "Config Assets URL: " . $config->getAssetsUrl() . "\n";
-    } catch (Exception $e) {
-        echo "Config Error: " . $e->getMessage() . "\n";
-    }
-    
-    echo "\n=== LOGIC TEST ===\n";
-    $force_https = getenv('FORCE_HTTPS') === 'true';
-    $is_production = getenv('IS_PRODUCTION') === 'true';
-    $app_url = getenv('APP_URL');
-    
-    echo "FORCE_HTTPS: " . ($force_https ? 'true' : 'false') . "\n";
-    echo "IS_PRODUCTION: " . ($is_production ? 'true' : 'false') . "\n";
-    echo "APP_URL: " . ($app_url ?: 'NOT SET') . "\n";
-    
-    if ($force_https || $is_production) {
-        echo "RESULT: Should use HTTPS\n";
-        echo "FINAL URL: https://" . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "\n";
-    } else {
-        echo "RESULT: Should use HTTP\n";
-        echo "FINAL URL: http://" . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "\n";
-    }
+    echo "\n=== HARDCODED HTTPS TEST ===\n";
+    echo "All URLs are now hardcoded to HTTPS\n";
+    echo "This should work regardless of any config issues\n";
     
     exit();
 }
@@ -142,14 +110,14 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
   <title>Divinosys 1.0</title>
 
   <!-- Bootstrap CSS -->
-  <link href="<?php echo str_replace('http://', 'https://', assets('css/bootstrap.min.css')); ?>" rel="stylesheet">
+  <link href="https://divinosys.conext.click/mvc/common/css/bootstrap.min.css" rel="stylesheet">
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <!-- Font Awesome -->
-  <link href="<?php echo str_replace('http://', 'https://', assets('vendor/fontawesome-free/css/all.min.css')); ?>" rel="stylesheet">
+  <link href="https://divinosys.conext.click/mvc/common/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
   <!-- Custom Login CSS -->
-  <link href="<?php echo str_replace('http://', 'https://', assets('css/login-style.css')); ?>" rel="stylesheet"/>
-  <link rel="shortcut icon" href="<?php echo str_replace('http://', 'https://', assets('img/beer.png')); ?>">
+  <link href="https://divinosys.conext.click/mvc/common/css/login-style.css" rel="stylesheet"/>
+  <link rel="shortcut icon" href="https://divinosys.conext.click/mvc/common/img/beer.png">
 </head>
 
 <body>
@@ -160,7 +128,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
         <p>Sistema de Gestão de Pedidos</p>
       </div>
       
-  <form method="POST" action="<?php echo str_replace('http://', 'https://', url('mvc/model/login.php')); ?>">
+  <form method="POST" action="https://divinosys.conext.click/mvc/model/login.php">
         <div class="form-group">
           <label for="login">Login</label>
           <div class="input-icon">
@@ -192,16 +160,16 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
       </form>
 
       <div class="login-links">
-        <a href="<?php echo str_replace('http://', 'https://', url('recuperar_senha.php')); ?>">Esqueceu a senha?</a>
+        <a href="https://divinosys.conext.click/recuperar_senha.php">Esqueceu a senha?</a>
         <br>
-        <a href="<?php echo str_replace('http://', 'https://', url('cadastrar_administrador.php')); ?>">Cadastrar Administrador</a>
+        <a href="https://divinosys.conext.click/cadastrar_administrador.php">Cadastrar Administrador</a>
       </div>
     </div>
   </div>
 
   <!-- Scripts -->
-  <script src="<?php echo str_replace('http://', 'https://', assets('js/jquery-3.4.0.min.js')); ?>"></script>
-  <script src="<?php echo str_replace('http://', 'https://', assets('js/bootstrap.bundle.min.js')); ?>"></script>
+  <script src="https://divinosys.conext.click/mvc/common/js/jquery-3.4.0.min.js"></script>
+  <script src="https://divinosys.conext.click/mvc/common/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

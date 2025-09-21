@@ -96,6 +96,12 @@ class Config {
             // error_log("ULTIMATE FIX: Forcing HTTPS for non-localhost domain: {$host}");
         }
         
+        // NUCLEAR OPTION: Always force HTTPS if we detect any production-like domain
+        if (strpos($host, '.') !== false && $host !== 'localhost') {
+            $protocol = 'https';
+            // error_log("NUCLEAR OPTION: Forcing HTTPS for domain with dots: {$host}");
+        }
+        
         // If APP_URL is set with https scheme, use it
         if ($app_url && isset($parsed_url['scheme']) && $parsed_url['scheme'] === 'https') {
             $protocol = 'https';
