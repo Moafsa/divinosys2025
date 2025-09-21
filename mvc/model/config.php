@@ -53,27 +53,34 @@ class Config {
         // Host (domain) with port - get from environment or server
         $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (getenv('APP_URL') ? parse_url(getenv('APP_URL'), PHP_URL_HOST) . (parse_url(getenv('APP_URL'), PHP_URL_PORT) ? ':' . parse_url(getenv('APP_URL'), PHP_URL_PORT) : '') : 'localhost');
         
-        // Get protocol from environment variables
-        $protocol = getenv('APP_PROTOCOL') ?: 'http';
-        
-        // Check if we should force HTTPS
+        // Force HTTPS for production domains or when explicitly set
         $force_https = getenv('FORCE_HTTPS') === 'true';
         $is_production = getenv('IS_PRODUCTION') === 'true';
         
-        // If force HTTPS is enabled, use HTTPS
-        if ($force_https) {
-            $protocol = 'https';
-        } elseif ($is_production) {
-            // If it's production, use HTTPS
+        // Check if host is a production domain (not localhost or IP)
+        $is_production_domain = !in_array($host, ['localhost', '127.0.0.1']) && 
+                               !preg_match('/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/', $host) &&
+                               !preg_match('/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+/', $host);
+        
+        // Determine protocol - force HTTPS for production domains
+        $protocol = 'http'; // Default
+        
+        // Force HTTPS for known production domains
+        $production_domains = ['divinosys.conext.click', 'conext.click'];
+        $is_known_production = in_array($host, $production_domains) || 
+                              preg_match('/\.conext\.click$/', $host);
+        
+        if ($force_https || $is_production || $is_production_domain || $is_known_production) {
             $protocol = 'https';
         } else {
-            // Check standard HTTPS indicators for other environments
+            // Check standard HTTPS indicators for development
             $https_indicators = [
                 isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
                 isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https',
                 isset($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on',
                 isset($_SERVER['HTTP_X_FORWARDED_PORT']) && $_SERVER['HTTP_X_FORWARDED_PORT'] === '443',
-                isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] === '443'
+                isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] === '443',
+                isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] === 'https'
             ];
             
             if (in_array(true, $https_indicators, true)) {
@@ -88,10 +95,13 @@ class Config {
         error_log("Environment: " . $this->config['environment']);
         error_log("Force HTTPS: " . ($force_https ? 'YES' : 'NO'));
         error_log("Is Production: " . ($is_production ? 'YES' : 'NO'));
+        error_log("Is Production Domain: " . ($is_production_domain ? 'YES' : 'NO'));
+        error_log("Is Known Production: " . ($is_known_production ? 'YES' : 'NO'));
         error_log("HTTPS Server Var: " . ($_SERVER['HTTPS'] ?? 'not set'));
         error_log("X-Forwarded-Proto: " . ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'not set'));
         error_log("X-Forwarded-SSL: " . ($_SERVER['HTTP_X_FORWARDED_SSL'] ?? 'not set'));
         error_log("Server Port: " . ($_SERVER['SERVER_PORT'] ?? 'not set'));
+        error_log("Request Scheme: " . ($_SERVER['REQUEST_SCHEME'] ?? 'not set'));
         error_log("Protocol: {$protocol}");
         error_log("Host detected: {$host}");
         error_log("Base URL: {$baseUrl}");
