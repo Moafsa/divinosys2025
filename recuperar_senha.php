@@ -30,11 +30,11 @@ if ($login == null) {?>
 
     <title>Divinosys 1.0</title>
 
-    <link href="mvc/common/css/animate.min.css" rel="stylesheet"/>
-    <link href="mvc/common/css/bootstrap-datepicker.css" rel="stylesheet"/>
-    <link href="mvc/common/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="mvc/common/css/sb-admin-2.min.css" rel="stylesheet">
-    <link rel="shortcut icon" href="mvc/common/img/beer.png">
+    <link href="<?php echo assets('css/animate.min.css'); ?>" rel="stylesheet"/>
+    <link href="<?php echo assets('css/bootstrap-datepicker.css'); ?>" rel="stylesheet"/>
+    <link href="<?php echo assets('vendor/fontawesome-free/css/all.min.css'); ?>" rel="stylesheet" type="text/css">
+    <link href="<?php echo assets('css/sb-admin-2.min.css'); ?>" rel="stylesheet">
+    <link rel="shortcut icon" href="<?php echo assets('img/beer.png'); ?>">
 
     <style>
       body {
@@ -161,7 +161,7 @@ if ($login == null) {?>
                 </button>
 
                 <div class="text-center mt-4">
-                  <a class="small" href="index.php">Voltar para o login</a>
+                  <a class="small" href="<?php echo url('index.php'); ?>">Voltar para o login</a>
                 </div>
               </form>
             </div>
@@ -226,11 +226,11 @@ if ($login == null) {?>
                 mysqli_stmt_close($stmt);
 
                 $_SESSION['msg'] = "<div class='alert alert-success' role='alert'>Sua nova senha é: " . htmlspecialchars($nova_senha) . "<br>Por favor, anote-a e faça login.</div>";
-                header("Location: index.php");
+                header("Location: " . url('index.php'));
                 exit;
             } else {
                 $_SESSION['msg'] = "<div class='alert alert-danger' role='alert'>Resposta incorreta! Tente novamente.</div>";
-                header("Location: recuperar_senha.php");
+                header("Location: " . url('recuperar_senha.php'));
                 exit;
             }
         }
@@ -240,7 +240,7 @@ if ($login == null) {?>
     } catch (Exception $e) {
         error_log("Erro na recuperação de senha: " . $e->getMessage());
         $_SESSION['msg'] = "<div class='alert alert-danger' role='alert'>" . htmlspecialchars($e->getMessage()) . "</div>";
-        header("Location: recuperar_senha.php");
+        header("Location: " . url('recuperar_senha.php'));
         exit;
     } finally {
         if (isset($conn)) {

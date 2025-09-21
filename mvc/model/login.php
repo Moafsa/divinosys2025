@@ -73,10 +73,26 @@ try {
         $result = $stmt->get_result();
         
         if ($row = $result->fetch_assoc()) {
-            logDebug("Usuário encontrado, verificando senha");
+            logDebug("Usuário encontrado: " . $row['login'] . " (ID: " . $row['id'] . ", Nível: " . $row['nivel'] . ")");
+            logDebug("Hash da senha no banco: " . substr($row['senha'], 0, 20) . "...");
             
-            // Verificar senha (MD5)
-            if (md5($senha) === $row['senha']) {
+            // Verificar senha (suporte a password_hash e MD5 para compatibilidade)
+            $senha_valida = false;
+            
+            // Primeiro tenta com password_verify (senhas modernas)
+            if (password_verify($senha, $row['senha'])) {
+                logDebug("Senha verificada com password_verify");
+                $senha_valida = true;
+            }
+            // Se não funcionar, tenta com MD5 (senhas antigas)
+            elseif (md5($senha) === $row['senha']) {
+                logDebug("Senha verificada com MD5");
+                $senha_valida = true;
+            } else {
+                logDebug("Senha incorreta - password_verify: " . (password_verify($senha, $row['senha']) ? 'true' : 'false') . ", MD5: " . (md5($senha) === $row['senha'] ? 'true' : 'false'));
+            }
+            
+            if ($senha_valida) {
                 logDebug("Senha correta, criando sessão");
                 
                 // Limpar qualquer redirecionamento anterior
@@ -99,7 +115,7 @@ try {
 
                 // Redirecionar para o dashboard
                 $config = Config::getInstance();
-                header("Location: ../../index.php?view=Dashboard1");
+                header("Location: " . $config->url('index.php?view=Dashboard1'));
                 exit();
             } else {
                 logDebug("Senha incorreta para o usuário: " . $login);
@@ -118,7 +134,7 @@ try {
     logDebug("Erro no processo de login: " . $e->getMessage());
     $_SESSION['msg'] = "<div class='alert alert-danger'>" . htmlspecialchars($e->getMessage()) . "</div>";
     $config = Config::getInstance();
-    header("Location: ../../index.php");
+    header("Location: " . $config->url('index.php'));
     exit();
 } finally {
     // Garantir que a conexão seja fechada
