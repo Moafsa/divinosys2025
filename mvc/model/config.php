@@ -65,10 +65,21 @@ class Config {
         // Determine protocol - prioritize environment variables
         $protocol = 'http'; // Default
         
-        // Check environment variables first
-        $force_https = getenv('FORCE_HTTPS') === 'true';
-        $is_production = getenv('IS_PRODUCTION') === 'true';
-        $app_protocol = getenv('APP_PROTOCOL');
+        // Check environment variables first - try multiple methods
+        $force_https = (getenv('FORCE_HTTPS') === 'true') || ($_ENV['FORCE_HTTPS'] ?? '') === 'true';
+        $is_production = (getenv('IS_PRODUCTION') === 'true') || ($_ENV['IS_PRODUCTION'] ?? '') === 'true';
+        $app_protocol = getenv('APP_PROTOCOL') ?: ($_ENV['APP_PROTOCOL'] ?? '');
+        
+        // Additional debug for environment variables
+        error_log("=== ENV VARIABLES DEBUG ===");
+        error_log("getenv('FORCE_HTTPS'): " . (getenv('FORCE_HTTPS') ?: 'NOT SET'));
+        error_log("\$_ENV['FORCE_HTTPS']: " . ($_ENV['FORCE_HTTPS'] ?? 'NOT SET'));
+        error_log("getenv('IS_PRODUCTION'): " . (getenv('IS_PRODUCTION') ?: 'NOT SET'));
+        error_log("\$_ENV['IS_PRODUCTION']: " . ($_ENV['IS_PRODUCTION'] ?? 'NOT SET'));
+        error_log("getenv('APP_PROTOCOL'): " . (getenv('APP_PROTOCOL') ?: 'NOT SET'));
+        error_log("\$_ENV['APP_PROTOCOL']: " . ($_ENV['APP_PROTOCOL'] ?? 'NOT SET'));
+        error_log("Final force_https: " . ($force_https ? 'true' : 'false'));
+        error_log("Final is_production: " . ($is_production ? 'true' : 'false'));
         
         // If APP_URL is set with https scheme, use it
         if ($app_url && isset($parsed_url['scheme']) && $parsed_url['scheme'] === 'https') {
