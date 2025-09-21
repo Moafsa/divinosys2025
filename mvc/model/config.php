@@ -81,6 +81,15 @@ class Config {
         error_log("Final force_https: " . ($force_https ? 'true' : 'false'));
         error_log("Final is_production: " . ($is_production ? 'true' : 'false'));
         
+        // EMERGENCY FIX: If we're on a production domain and env vars are not working, force HTTPS
+        $is_production_domain = !in_array($host, ['localhost', '127.0.0.1']) && 
+                               !preg_match('/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/', $host);
+        
+        if ($is_production_domain && !$force_https && !$is_production) {
+            error_log("EMERGENCY FIX: Production domain detected but env vars not working, forcing HTTPS");
+            $protocol = 'https';
+        }
+        
         // If APP_URL is set with https scheme, use it
         if ($app_url && isset($parsed_url['scheme']) && $parsed_url['scheme'] === 'https') {
             $protocol = 'https';

@@ -8,45 +8,6 @@ ini_set('error_log', '/var/www/html/php_errors.log');
 error_log("Current directory: " . __DIR__);
 error_log("Document root: " . $_SERVER['DOCUMENT_ROOT']);
 
-// DEBUG MODE - Add ?debug=1 to URL to see environment variables
-if (isset($_GET['debug']) && $_GET['debug'] === '1') {
-    header('Content-Type: text/plain');
-    echo "=== ENVIRONMENT DEBUG ===\n\n";
-    
-    // Check environment variables
-    $env_vars = ['APP_URL', 'APP_PROTOCOL', 'FORCE_HTTPS', 'IS_PRODUCTION', 'APP_ENV'];
-    foreach ($env_vars as $var) {
-        $value = getenv($var);
-        echo "getenv('{$var}'): " . ($value ?: 'NOT SET') . "\n";
-    }
-    
-    echo "\n=== SERVER VARIABLES ===\n";
-    $server_vars = ['HTTP_HOST', 'HTTPS', 'REQUEST_SCHEME', 'HTTP_X_FORWARDED_PROTO'];
-    foreach ($server_vars as $var) {
-        $value = $_SERVER[$var] ?? 'NOT SET';
-        echo "\$_SERVER['{$var}']: {$value}\n";
-    }
-    
-    echo "\n=== LOGIC TEST ===\n";
-    $force_https = getenv('FORCE_HTTPS') === 'true';
-    $is_production = getenv('IS_PRODUCTION') === 'true';
-    $app_url = getenv('APP_URL');
-    
-    echo "FORCE_HTTPS: " . ($force_https ? 'true' : 'false') . "\n";
-    echo "IS_PRODUCTION: " . ($is_production ? 'true' : 'false') . "\n";
-    echo "APP_URL: " . ($app_url ?: 'NOT SET') . "\n";
-    
-    if ($force_https || $is_production) {
-        echo "RESULT: Should use HTTPS\n";
-        echo "FINAL URL: https://" . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "\n";
-    } else {
-        echo "RESULT: Should use HTTP\n";
-        echo "FINAL URL: http://" . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "\n";
-    }
-    
-    exit();
-}
-
 // Limpar qualquer output anterior e iniciar buffer
 if (ob_get_level()) ob_end_clean();
 ob_start();
@@ -68,6 +29,50 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Incluir arquivos necessários
 require_once ROOT_PATH . "/mvc/model/config.php";
+
+// DEBUG MODE - Add ?debug=1 to URL to see environment variables
+if (isset($_GET['debug']) && $_GET['debug'] === '1') {
+    header('Content-Type: text/plain');
+    echo "=== ENVIRONMENT DEBUG ===\n\n";
+    
+    // Check environment variables
+    $env_vars = ['APP_URL', 'APP_PROTOCOL', 'FORCE_HTTPS', 'IS_PRODUCTION', 'APP_ENV'];
+    foreach ($env_vars as $var) {
+        $value = getenv($var);
+        echo "getenv('{$var}'): " . ($value ?: 'NOT SET') . "\n";
+    }
+    
+    echo "\n=== SERVER VARIABLES ===\n";
+    $server_vars = ['HTTP_HOST', 'HTTPS', 'REQUEST_SCHEME', 'HTTP_X_FORWARDED_PROTO'];
+    foreach ($server_vars as $var) {
+        $value = $_SERVER[$var] ?? 'NOT SET';
+        echo "\$_SERVER['{$var}']: {$value}\n";
+    }
+    
+    echo "\n=== CONFIG TEST ===\n";
+    $config = Config::getInstance();
+    echo "Config Base URL: " . $config->getBaseUrl() . "\n";
+    echo "Config Assets URL: " . $config->getAssetsUrl() . "\n";
+    
+    echo "\n=== LOGIC TEST ===\n";
+    $force_https = getenv('FORCE_HTTPS') === 'true';
+    $is_production = getenv('IS_PRODUCTION') === 'true';
+    $app_url = getenv('APP_URL');
+    
+    echo "FORCE_HTTPS: " . ($force_https ? 'true' : 'false') . "\n";
+    echo "IS_PRODUCTION: " . ($is_production ? 'true' : 'false') . "\n";
+    echo "APP_URL: " . ($app_url ?: 'NOT SET') . "\n";
+    
+    if ($force_https || $is_production) {
+        echo "RESULT: Should use HTTPS\n";
+        echo "FINAL URL: https://" . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "\n";
+    } else {
+        echo "RESULT: Should use HTTP\n";
+        echo "FINAL URL: http://" . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "\n";
+    }
+    
+    exit();
+}
 
 // Tentar conectar ao banco, mas não falhar se não conseguir
 try {
