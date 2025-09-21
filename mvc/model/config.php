@@ -127,8 +127,8 @@ class Config {
             return '/';
         }
         
-        // Usar caminho relativo para evitar problemas de Mixed Content
-        $url = $path;
+        // Use absolute URL with current protocol to avoid Mixed Content issues
+        $url = $this->baseUrl . '/' . $path;
         
         // Log para debug
         error_log("URL Gerada para {$path}: {$url}");
@@ -156,8 +156,8 @@ class Config {
 
     public function getAssetsUrl($path = '') {
         $path = trim($path, '/');
-        // Use relative path to avoid Mixed Content issues
-        return 'mvc/common/' . $path;
+        // Use absolute URL with current protocol to avoid Mixed Content issues
+        return $this->baseUrl . '/mvc/common/' . $path;
     }
 
     public static function assets($path = '') {
