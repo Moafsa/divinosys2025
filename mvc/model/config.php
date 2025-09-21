@@ -86,14 +86,14 @@ class Config {
                                !preg_match('/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/', $host);
         
         if ($is_production_domain && !$force_https && !$is_production) {
-            error_log("EMERGENCY FIX: Production domain detected but env vars not working, forcing HTTPS");
+            // error_log("EMERGENCY FIX: Production domain detected but env vars not working, forcing HTTPS");
             $protocol = 'https';
         }
         
         // ULTIMATE FIX: Force HTTPS for ANY domain that's not localhost
         if ($host !== 'localhost' && $host !== '127.0.0.1') {
             $protocol = 'https';
-            error_log("ULTIMATE FIX: Forcing HTTPS for non-localhost domain: {$host}");
+            // error_log("ULTIMATE FIX: Forcing HTTPS for non-localhost domain: {$host}");
         }
         
         // If APP_URL is set with https scheme, use it
@@ -131,18 +131,18 @@ class Config {
         // Build base URL
         $baseUrl = "{$protocol}://{$host}";
         
-        // Debug logs
-        error_log("=== CONFIG DEBUG START ===");
-        error_log("APP_URL: " . ($app_url ?: 'not set'));
-        error_log("APP_PROTOCOL: " . ($app_protocol ?: 'not set'));
-        error_log("FORCE_HTTPS: " . ($force_https ? 'YES' : 'NO'));
-        error_log("IS_PRODUCTION: " . ($is_production ? 'YES' : 'NO'));
-        error_log("HTTPS Server Var: " . ($_SERVER['HTTPS'] ?? 'not set'));
-        error_log("X-Forwarded-Proto: " . ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'not set'));
-        error_log("Final Protocol: {$protocol}");
-        error_log("Host detected: {$host}");
-        error_log("Base URL: {$baseUrl}");
-        error_log("=== CONFIG DEBUG END ===");
+        // Debug logs (commented out for build stability)
+        // error_log("=== CONFIG DEBUG START ===");
+        // error_log("APP_URL: " . ($app_url ?: 'not set'));
+        // error_log("APP_PROTOCOL: " . ($app_protocol ?: 'not set'));
+        // error_log("FORCE_HTTPS: " . ($force_https ? 'YES' : 'NO'));
+        // error_log("IS_PRODUCTION: " . ($is_production ? 'YES' : 'NO'));
+        // error_log("HTTPS Server Var: " . ($_SERVER['HTTPS'] ?? 'not set'));
+        // error_log("X-Forwarded-Proto: " . ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'not set'));
+        // error_log("Final Protocol: {$protocol}");
+        // error_log("Host detected: {$host}");
+        // error_log("Base URL: {$baseUrl}");
+        // error_log("=== CONFIG DEBUG END ===");
         
         return $baseUrl;
     }

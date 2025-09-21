@@ -142,14 +142,14 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
   <title>Divinosys 1.0</title>
 
   <!-- Bootstrap CSS -->
-  <link href="<?php echo assets('css/bootstrap.min.css'); ?>" rel="stylesheet">
+  <link href="<?php echo str_replace('http://', 'https://', assets('css/bootstrap.min.css')); ?>" rel="stylesheet">
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <!-- Font Awesome -->
-  <link href="<?php echo assets('vendor/fontawesome-free/css/all.min.css'); ?>" rel="stylesheet">
+  <link href="<?php echo str_replace('http://', 'https://', assets('vendor/fontawesome-free/css/all.min.css')); ?>" rel="stylesheet">
   <!-- Custom Login CSS -->
-  <link href="<?php echo assets('css/login-style.css'); ?>" rel="stylesheet"/>
-  <link rel="shortcut icon" href="<?php echo assets('img/beer.png'); ?>">
+  <link href="<?php echo str_replace('http://', 'https://', assets('css/login-style.css')); ?>" rel="stylesheet"/>
+  <link rel="shortcut icon" href="<?php echo str_replace('http://', 'https://', assets('img/beer.png')); ?>">
 </head>
 
 <body>
@@ -160,7 +160,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
         <p>Sistema de Gestão de Pedidos</p>
       </div>
       
-  <form method="POST" action="<?php echo url('mvc/model/login.php'); ?>">
+  <form method="POST" action="<?php echo str_replace('http://', 'https://', url('mvc/model/login.php')); ?>">
         <div class="form-group">
           <label for="login">Login</label>
           <div class="input-icon">
@@ -192,16 +192,16 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
       </form>
 
       <div class="login-links">
-        <a href="<?php echo url('recuperar_senha.php'); ?>">Esqueceu a senha?</a>
+        <a href="<?php echo str_replace('http://', 'https://', url('recuperar_senha.php')); ?>">Esqueceu a senha?</a>
         <br>
-        <a href="<?php echo url('cadastrar_administrador.php'); ?>">Cadastrar Administrador</a>
+        <a href="<?php echo str_replace('http://', 'https://', url('cadastrar_administrador.php')); ?>">Cadastrar Administrador</a>
       </div>
     </div>
   </div>
 
   <!-- Scripts -->
-  <script src="<?php echo assets('js/jquery-3.4.0.min.js'); ?>"></script>
-  <script src="<?php echo assets('js/bootstrap.bundle.min.js'); ?>"></script>
+  <script src="<?php echo str_replace('http://', 'https://', assets('js/jquery-3.4.0.min.js')); ?>"></script>
+  <script src="<?php echo str_replace('http://', 'https://', assets('js/bootstrap.bundle.min.js')); ?>"></script>
 </body>
 </html>
 
