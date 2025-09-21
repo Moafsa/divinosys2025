@@ -50,9 +50,13 @@ if (isset($_GET['debug']) && $_GET['debug'] === '1') {
     }
     
     echo "\n=== CONFIG TEST ===\n";
-    $config = Config::getInstance();
-    echo "Config Base URL: " . $config->getBaseUrl() . "\n";
-    echo "Config Assets URL: " . $config->getAssetsUrl() . "\n";
+    try {
+        $config = Config::getInstance();
+        echo "Config Base URL: " . $config->getBaseUrl() . "\n";
+        echo "Config Assets URL: " . $config->getAssetsUrl() . "\n";
+    } catch (Exception $e) {
+        echo "Config Error: " . $e->getMessage() . "\n";
+    }
     
     echo "\n=== LOGIC TEST ===\n";
     $force_https = getenv('FORCE_HTTPS') === 'true';

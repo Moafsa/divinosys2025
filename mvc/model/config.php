@@ -70,16 +70,16 @@ class Config {
         $is_production = (getenv('IS_PRODUCTION') === 'true') || ($_ENV['IS_PRODUCTION'] ?? '') === 'true';
         $app_protocol = getenv('APP_PROTOCOL') ?: ($_ENV['APP_PROTOCOL'] ?? '');
         
-        // Additional debug for environment variables
-        error_log("=== ENV VARIABLES DEBUG ===");
-        error_log("getenv('FORCE_HTTPS'): " . (getenv('FORCE_HTTPS') ?: 'NOT SET'));
-        error_log("\$_ENV['FORCE_HTTPS']: " . ($_ENV['FORCE_HTTPS'] ?? 'NOT SET'));
-        error_log("getenv('IS_PRODUCTION'): " . (getenv('IS_PRODUCTION') ?: 'NOT SET'));
-        error_log("\$_ENV['IS_PRODUCTION']: " . ($_ENV['IS_PRODUCTION'] ?? 'NOT SET'));
-        error_log("getenv('APP_PROTOCOL'): " . (getenv('APP_PROTOCOL') ?: 'NOT SET'));
-        error_log("\$_ENV['APP_PROTOCOL']: " . ($_ENV['APP_PROTOCOL'] ?? 'NOT SET'));
-        error_log("Final force_https: " . ($force_https ? 'true' : 'false'));
-        error_log("Final is_production: " . ($is_production ? 'true' : 'false'));
+        // Additional debug for environment variables (commented out for build stability)
+        // error_log("=== ENV VARIABLES DEBUG ===");
+        // error_log("getenv('FORCE_HTTPS'): " . (getenv('FORCE_HTTPS') ?: 'NOT SET'));
+        // error_log("\$_ENV['FORCE_HTTPS']: " . ($_ENV['FORCE_HTTPS'] ?? 'NOT SET'));
+        // error_log("getenv('IS_PRODUCTION'): " . (getenv('IS_PRODUCTION') ?: 'NOT SET'));
+        // error_log("\$_ENV['IS_PRODUCTION']: " . ($_ENV['IS_PRODUCTION'] ?? 'NOT SET'));
+        // error_log("getenv('APP_PROTOCOL'): " . (getenv('APP_PROTOCOL') ?: 'NOT SET'));
+        // error_log("\$_ENV['APP_PROTOCOL']: " . ($_ENV['APP_PROTOCOL'] ?? 'NOT SET'));
+        // error_log("Final force_https: " . ($force_https ? 'true' : 'false'));
+        // error_log("Final is_production: " . ($is_production ? 'true' : 'false'));
         
         // EMERGENCY FIX: If we're on a production domain and env vars are not working, force HTTPS
         $is_production_domain = !in_array($host, ['localhost', '127.0.0.1']) && 
@@ -88,6 +88,12 @@ class Config {
         if ($is_production_domain && !$force_https && !$is_production) {
             error_log("EMERGENCY FIX: Production domain detected but env vars not working, forcing HTTPS");
             $protocol = 'https';
+        }
+        
+        // ULTIMATE FIX: Force HTTPS for ANY domain that's not localhost
+        if ($host !== 'localhost' && $host !== '127.0.0.1') {
+            $protocol = 'https';
+            error_log("ULTIMATE FIX: Forcing HTTPS for non-localhost domain: {$host}");
         }
         
         // If APP_URL is set with https scheme, use it
